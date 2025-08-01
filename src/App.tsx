@@ -1,7 +1,8 @@
 import Text from './components/text'
 import Icon from './components/icon'
 import Badge from './components/badge'
-import { Cube } from '@phosphor-icons/react'
+import { CubeIcon, PlusIcon } from '@phosphor-icons/react'
+import Button from './components/button'
 
 export default function App() {
   return (
@@ -13,11 +14,14 @@ export default function App() {
         <Text variant="text-sm-bold">Hello World</Text>
       </div>
       <div className="flex flex-col gap-1">
-        <Icon svg={Cube} className="w-6 h-6 fill-blue-500" />
+        <Icon svg={CubeIcon} className="w-6 h-6 fill-blue-500" />
       </div>
       <div>
         <Badge variant="active">Active</Badge>
         <Badge variant="inactive">Inactive</Badge>
+      </div>
+      <div>
+        <Button icon={PlusIcon}>Novo produto</Button>
       </div>
     </div>
   )
