@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-@theme {
+/* @theme {
   --color-*: initial;
   --color-white: #ffffff;
   --color-gray-100: #f7f3f6;
@@ -13,4 +13,4 @@
   --color-pink-light: #e9cce1;
   --color-pink-base: #c257a4;
   --color-pink-dark: #884074;
-}
+} */
