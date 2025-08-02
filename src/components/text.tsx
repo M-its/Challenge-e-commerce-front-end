@@ -6,7 +6,7 @@ export const textVariants = cva('font-sans', {
     variant: {
       'text-xl-bold': 'text-2xl font-semibold text-slate-200', //logo
       'text-lg-bold': 'text-lg font-semibold text-slate-200', // filtros, nome, peso
-      'text-md': 'text-base font-normal text-slate-500', // pesquisa, descrição, estabilização
+      'text-md': 'text-base font-normal text-slate-500', // descrição, estabilização
       'text-sm-bold': 'text-xs font-semibold', // status
     },
   },

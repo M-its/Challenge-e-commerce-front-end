@@ -1,7 +1,7 @@
 import React from 'react'
 import Text from './text'
 import { cva, cx, type VariantProps } from 'class-variance-authority'
-// import Skeleton from './skeleton'
+import Skeleton from './skeleton'
 
 export const badgeVariants = cva(
   'inline-flex items-center justify-center rounded-full',
@@ -26,6 +26,7 @@ export const badgeVariants = cva(
 export const badgeTextVariants = cva('', {
   variants: {
     variant: {
+      none: '',
       active: 'text-green-300',
       inactive: 'text-red-300',
     },
