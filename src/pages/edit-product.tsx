@@ -10,15 +10,14 @@ import SelectField from '../core-components/select-field'
 import RadioGroupField from '../core-components/radio-component'
 import { TrashIcon } from '@phosphor-icons/react'
 
-export default function CreateProduct() {
+export default function EditProduct() {
   const [hasStabilization, setHasStabilization] = useState<boolean | undefined>(
     undefined
   )
-
   return (
     <Container>
       <Text as="h1" variant="text-xl-bold" className="text-slate-300 mb-4">
-        Create Lens
+        Edit Lens
       </Text>
 
       <Card className="p-8">

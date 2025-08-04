@@ -10,7 +10,8 @@ export const inputTextVariants = cva(
   {
     variants: {
       size: {
-        lg: 'pl-10 pr-4 py-3 w-full',
+        lg: 'pl-10 pr-4 w-full h-12',
+        md: 'pl-5 pr-4 w-full h-12',
       },
       disabled: {
         true: 'pointer-events-none opacity-60',
@@ -45,6 +46,8 @@ interface InputTextProps
   extends VariantProps<typeof inputTextVariants>,
     Omit<React.ComponentProps<'input'>, 'size' | 'disabled'> {
   icon?: React.ComponentProps<typeof Icon>['svg']
+  label?: string
+  hideLabel?: boolean
 }
 
 export default function InputText({
@@ -52,27 +55,45 @@ export default function InputText({
   disabled,
   icon: IconComponent,
   className,
+  id,
+  label,
+  hideLabel,
   ...props
 }: InputTextProps) {
   return (
-    <div className="relative w-full">
-      {IconComponent && (
-        <Icon
-          svg={IconComponent}
-          className={buttonIconVariants()}
-          aria-hidden
-        />
+    <div className="w-full space-y-1">
+      {label && (
+        <label
+          htmlFor={id}
+          className={cx(
+            'block text-md font-medium text-slate-200 mb-2',
+            hideLabel && 'sr-only'
+          )}
+        >
+          {label}
+        </label>
       )}
 
-      <input
-        className={cx(
-          inputTextVariants({ size, disabled }),
-          textVariants({ variant: 'text-md' }),
-          className
+      <div className="relative w-full">
+        {IconComponent && (
+          <Icon
+            svg={IconComponent}
+            className={buttonIconVariants()}
+            aria-hidden
+          />
         )}
-        disabled={disabled ?? undefined}
-        {...props}
-      />
+
+        <input
+          id={id}
+          className={cx(
+            inputTextVariants({ size, disabled }),
+            textVariants({ variant: 'text-md' }),
+            className
+          )}
+          disabled={disabled ?? undefined}
+          {...props}
+        />
+      </div>
     </div>
   )
 }

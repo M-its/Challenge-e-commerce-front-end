@@ -11,11 +11,13 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-slate-800 hover:bg-slate-700',
-        secondary: 'bg-red-700 hover:bg-red-600',
+        primary: 'bg-slate-700 hover:bg-slate-600',
+        secondary: 'bg-red-900 hover:bg-red-800',
+        tertiary: 'bg-blue-700 hover:bg-blue-600',
       },
       size: {
-        md: 'h-14 py-5 px-5',
+        md: 'h-12 py-5 px-5',
+        sm: 'h-10 py-3 px-5',
       },
       disabled: {
         true: 'opacity-50 pointer-events-none',
@@ -34,9 +36,11 @@ export const buttonIconVariants = cva('transition', {
     variant: {
       primary: 'fill-slate-200',
       secondary: 'fill-slate-200',
+      tertiary: 'fill-slate-200',
     },
     size: {
       md: 'w-5 h-5',
+      sm: 'w-5 h-5',
     },
   },
   defaultVariants: {
