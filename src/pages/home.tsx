@@ -1,57 +1,51 @@
+import { useEffect, useState } from 'react'
 import { MagnifyingGlassIcon } from '@phosphor-icons/react'
 
 import Container from '../components/container'
 import InputText from '../components/input'
 import LensFilters from '../core-components/lens-filter'
 import LensList from '../core-components/lens-list'
-import { useEffect } from 'react'
-
-const lenses = [
-  {
-    model: 'Nikon NIKKOR Z 24-70mm f/2.8 S',
-    brand: 'Nikon',
-    type: 'Zoom',
-    focalLength: '24-70mm',
-    maxAperture: 'f/2.8',
-    mount: 'Nikon Z Mount',
-    weight: '805g',
-    hasStabilization: true,
-    active: true,
-  },
-  {
-    model: 'Canon RF 70-200mm f/2.8L IS USM',
-    brand: 'Canon',
-    type: 'Telephoto',
-    focalLength: '70-200mm',
-    maxAperture: 'f/2.8',
-    mount: 'Canon RF Mount',
-    weight: '1070g',
-    hasStabilization: true,
-    active: true,
-  },
-  {
-    model: 'Sony FE 85mm f/1.4 GM',
-    brand: 'Sony',
-    type: 'Prime',
-    focalLength: '85mm',
-    maxAperture: 'f/1.4',
-    mount: 'Sony E Mount',
-    weight: '820g',
-    hasStabilization: false,
-    active: false,
-  },
-]
+import Button from '../components/button'
+import Text from '../components/text'
 
 export default function Home() {
+  const [lenses, setLenses] = useState([])
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [limit] = useState(9)
+  const [loading, setLoading] = useState(false)
+  const [filter, setFilter] = useState('all')
+
   useEffect(() => {
     async function fetchProducts() {
-      const res = await fetch('http://localhost:3333/products')
-      const data = await res.json()
-      console.log(data)
+      setLoading(true)
+      try {
+        const url = 'http://localhost:3333'
+        let endpoint = '/products'
+
+        if (filter === 'active') {
+          endpoint = '/products/active'
+        } else if (filter === 'inactive') {
+          endpoint = '/products/inactive'
+        }
+
+        const res = await fetch(`${url}${endpoint}?page=${page}&limit=${limit}`)
+
+        const data = await res.json()
+        const products = data.products.products
+        const totalPages = Math.ceil(data.products.total / 9)
+
+        setLenses(products || [])
+        setTotalPages(totalPages || 1)
+      } catch (error) {
+        console.error('Erro ao buscar lentes', error)
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchProducts()
-  }, [])
+  }, [page, limit, filter])
   return (
     <Container className="space-y-6">
       <InputText
@@ -60,8 +54,31 @@ export default function Home() {
         icon={MagnifyingGlassIcon}
         placeholder="Search lenses..."
       />
-      <LensFilters />
-      <LensList lenses={lenses} />
+      <LensFilters filter={filter} setFilter={setFilter} />
+      {loading ? (
+        <p className="text-slate-400">Carregando...</p>
+      ) : (
+        <LensList lenses={lenses} />
+      )}
+      <div className="flex gap-4 items-center justify-center pt-4">
+        <Button
+          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+          disabled={page === 1}
+          className="text-slate-200"
+        >
+          ←
+        </Button>
+        <Text className="text-slate-400">
+          Página {page} de {totalPages}
+        </Text>
+        <Button
+          onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+          disabled={page === totalPages}
+          className="text-slate-200"
+        >
+          →
+        </Button>
+      </div>
     </Container>
   )
 }

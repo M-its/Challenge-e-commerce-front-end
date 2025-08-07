@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
 
 import Button from '../components/button'
 import Card from '../components/card'
@@ -11,40 +12,181 @@ import RadioGroupField from '../core-components/radio-component'
 import { TrashIcon } from '@phosphor-icons/react'
 
 export default function EditProduct() {
-  const [hasStabilization, setHasStabilization] = useState<boolean | undefined>(
-    undefined
-  )
+  const { id } = useParams()
+
+  const [model, setModel] = useState<string>('')
+  const [brand, setBrand] = useState<string>('')
+  const [type, setType] = useState<string>('')
+  const [focalLength, setFocalLength] = useState<string>('')
+  const [maxAperture, setMaxAperture] = useState<string>('')
+  const [mount, setMount] = useState<string>('')
+  const [weight, setWeight] = useState<string>('')
+  const [active, setActive] = useState<boolean>(true)
+  const [hasStabilization, setHasStabilization] = useState<boolean | null>(null)
+
+  const navigate = useNavigate()
+  const url = 'http://localhost:3333/products'
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+
+    const product = {
+      model,
+      brand,
+      type,
+      focalLength,
+      maxAperture,
+      mount,
+      weight: Number(weight),
+      hasStabilization,
+      active,
+    }
+
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(product),
+      })
+
+      if (!res.ok) throw new Error('Erro ao Atualizar lente')
+
+      navigate('/')
+    } catch (err) {
+      console.error(err)
+      alert('Erro ao Atualizar lente. Verifique os dados.')
+    }
+  }
+
+  useEffect(() => {
+    async function fetchLens() {
+      try {
+        const res = await fetch(`${url}/${id}`)
+        const data = await res.json()
+        console.log(data)
+        const {
+          model,
+          brand,
+          type,
+          focalLength,
+          maxAperture,
+          mount,
+          weight,
+          hasStabilization,
+          active,
+        } = data.product
+
+        setModel(model)
+        setBrand(brand)
+        setType(type)
+        setFocalLength(focalLength)
+        setMaxAperture(maxAperture)
+        setMount(mount)
+        setWeight(weight)
+        setHasStabilization(hasStabilization)
+        setActive(active)
+      } catch (err) {
+        console.error('Erro ao carregar lente', err)
+      }
+    }
+
+    fetchLens()
+  }, [id])
+
   return (
     <Container>
       <Text as="h1" variant="text-xl-bold" className="text-slate-300 mb-4">
         Edit Lens
       </Text>
-
       <Card className="p-8">
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <FormField label="Model" placeholder="NIKKOR Z 24-70mm f/2.8 S" />
-          <FormField label="Brand" placeholder="Nikon" />
-          <SelectField label="Type" />
-          <FormField label="Focal Length" placeholder="24-70mm" />
-          <FormField label="Max Aperture" placeholder="f/2.8" />
-          <FormField label="Mount" placeholder="Nikon Z Mount" />
-          <FormField label="Weight (grams)" placeholder="800" />
-
-          <RadioGroupField
-            label="Image Stabilization"
-            name="stabilization"
-            value={hasStabilization}
-            onChange={setHasStabilization}
+        <form
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          onSubmit={handleSubmit}
+        >
+          <FormField
+            label="Model"
+            placeholder="NIKKOR Z 24-70mm f/2.8 S"
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+          />
+          <FormField
+            label="Brand"
+            placeholder="Nikon"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+          />
+          <SelectField
+            label="Type"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
           />
 
-          <Button size="sm" variant="tertiary" type="submit">
+          <FormField
+            label="Focal Length"
+            placeholder="24-70mm"
+            value={focalLength}
+            onChange={(e) => setFocalLength(e.target.value)}
+            onBlur={() => {
+              if (focalLength && !focalLength.toLowerCase().includes('mm')) {
+                setFocalLength((prev) => `${prev}mm`)
+              }
+            }}
+          />
+          <FormField
+            label="Max Aperture"
+            placeholder="f/2.8"
+            value={maxAperture}
+            onChange={(e) => setMaxAperture(e.target.value)}
+            onBlur={() => {
+              if (maxAperture && !maxAperture.toLowerCase().startsWith('f/')) {
+                setMaxAperture((prev) => `f/${prev}`)
+              }
+            }}
+          />
+          <FormField
+            label="Mount"
+            placeholder="Nikon Z Mount"
+            value={mount}
+            onChange={(e) => setMount(e.target.value)}
+          />
+          <FormField
+            label="Weight (grams)"
+            placeholder="800"
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+          />
+
+          <div>
+            <RadioGroupField
+              label="Image Stabilization"
+              name="stabilization"
+              value={hasStabilization}
+              onChange={setHasStabilization}
+              options={[
+                { label: 'Yes', value: true },
+                { label: 'No', value: false },
+              ]}
+            />
+            <RadioGroupField
+              label="Status"
+              name="active"
+              value={active}
+              onChange={setActive}
+              options={[
+                { label: 'Active', value: true },
+                { label: 'Inactive', value: false },
+              ]}
+            />
+          </div>
+          <Button size="md" variant="tertiary" type="submit" className="mt-8">
             Save
           </Button>
+
           <Button
             icon={TrashIcon}
-            size="sm"
+            size="md"
             variant="secondary"
-            className="w-full"
+            className="mt-8"
           >
             Delete
           </Button>

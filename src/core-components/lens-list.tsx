@@ -1,6 +1,7 @@
 import LensCard from './lens-card'
 
 interface Lens {
+  id: string
   model: string
   brand: string
   type: string
@@ -16,7 +17,7 @@ export default function LensList({ lenses }: { lenses: Lens[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {lenses.map((lens) => (
-        <LensCard key={lens.model} lens={lens} />
+        <LensCard key={lens.id} lens={lens} />
       ))}
     </div>
   )

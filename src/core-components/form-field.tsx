@@ -6,6 +6,7 @@ interface FormFieldProps {
   name?: string
   value?: string
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void
 }
 
 export default function FormField({
@@ -14,6 +15,7 @@ export default function FormField({
   name,
   value,
   onChange,
+  onBlur,
 }: FormFieldProps) {
   return (
     <div>
@@ -24,6 +26,7 @@ export default function FormField({
         name={name}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
       />
     </div>
   )

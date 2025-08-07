@@ -11,7 +11,7 @@ export default function App() {
         <Route element={<LayoutMain />}>
           <Route index element={<Home />} />
           <Route path="/create-product" element={<CreateProduct />} />
-          <Route path="/edit-product" element={<EditProduct />} />
+          <Route path="/edit-product/:id" element={<EditProduct />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -7,6 +7,7 @@ import { NavLink } from 'react-router'
 
 interface LensCardProps {
   lens: {
+    id: string
     model: string
     brand: string
     type: string
@@ -50,11 +51,13 @@ export default function LensCard({ lens }: LensCardProps) {
         </Text>
         <div className="flex justify-between items-center text-sm text-slate-200">
           <Text>{lens.weight}</Text>
-          <Text>{lens.hasStabilization ? 'Has stabilization' : ''}</Text>
+          <Text>
+            {lens.hasStabilization ? 'Has stabilization' : 'No stabilization'}
+          </Text>
         </div>
       </div>
       <div className="flex mt-4">
-        <NavLink to="/edit-product" className="w-full">
+        <NavLink to={`/edit-product/${lens.id}`} className="w-full">
           <Button icon={PenNibIcon} size="sm" className="w-full">
             Update
           </Button>
