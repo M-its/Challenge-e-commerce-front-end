@@ -42,19 +42,59 @@ export default function EditProduct() {
       active,
     }
 
+    function extractZodMessages(errorData: { message: string }): string {
+      try {
+        const parsedErrors = JSON.parse(errorData.message)
+        if (Array.isArray(parsedErrors)) {
+          return parsedErrors.map((err) => err.message).join('; ')
+        }
+      } catch (parsedError) {
+        console.error('Fail to parse JSON error message: ', parsedError)
+      }
+      return errorData.message || 'Unknow error'
+    }
+
     try {
-      const res = await fetch(url, {
+      const res = await fetch(`${url}/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(product),
       })
 
-      if (!res.ok) throw new Error('Erro ao Atualizar lente')
+      if (!res.ok) {
+        const errorData = await res.json()
+        const msg = extractZodMessages(errorData)
+        console.error('Error while updating lens: ', msg)
+        alert(`Error while updating lens: ${msg}`)
+        return
+      }
 
       navigate('/')
     } catch (err) {
+      console.error('Request error:', err)
+      alert('Error while creating lens. check data')
+    }
+  }
+
+  async function handleDelete() {
+    const confirmDelete = window.confirm(
+      'Tem certeza que deseja excluir esta lente?'
+    )
+
+    if (!confirmDelete) return
+
+    try {
+      const res = await fetch(`${url}/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (!res.ok) throw new Error('Erro ao excluir lente')
+
+      alert('Lente excluida com sucesso!')
+      navigate('/')
+    } catch (err) {
       console.error(err)
-      alert('Erro ao Atualizar lente. Verifique os dados.')
+      alert('Erro ao excluir lente.')
     }
   }
 
@@ -153,7 +193,10 @@ export default function EditProduct() {
             label="Weight (grams)"
             placeholder="800"
             value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            onChange={(e) => {
+              const onlyNumbers = e.target.value.replace(/\D/g, '')
+              setWeight(onlyNumbers)
+            }}
           />
 
           <div>
@@ -187,6 +230,8 @@ export default function EditProduct() {
             size="md"
             variant="secondary"
             className="mt-8"
+            type="button"
+            onClick={handleDelete}
           >
             Delete
           </Button>

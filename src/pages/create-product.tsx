@@ -9,7 +9,7 @@ import Text from '../components/text'
 import FormField from '../core-components/form-field'
 import SelectField from '../core-components/select-field'
 import RadioGroupField from '../core-components/radio-component'
-import { TrashIcon } from '@phosphor-icons/react'
+import { XIcon } from '@phosphor-icons/react'
 
 export default function CreateProduct() {
   const [model, setModel] = useState<string>('')
@@ -42,6 +42,19 @@ export default function CreateProduct() {
       active,
     }
 
+    function extractZodMessages(errorData: { message: string }): string {
+      try {
+        const parsedErrors = JSON.parse(errorData.message)
+        console.log(parsedErrors)
+        if (Array.isArray(parsedErrors)) {
+          return parsedErrors.map((err) => err.message).join('; ')
+        }
+      } catch (parsedError) {
+        console.error('Fail to parse JSON error message: ', parsedError)
+      }
+      return errorData.message || 'Unknow error'
+    }
+
     try {
       const res = await fetch(url, {
         method: 'POST',
@@ -49,12 +62,19 @@ export default function CreateProduct() {
         body: JSON.stringify(product),
       })
 
-      if (!res.ok) throw new Error('Erro ao criar lente')
+      if (!res.ok) {
+        const errorData = await res.json()
+        console.log(errorData)
+        const msg = extractZodMessages(errorData)
+        console.error('Error while creating lens: ', msg)
+        alert(`Error while creating lens: ${msg}`)
+        return
+      }
 
       navigate('/')
     } catch (err) {
-      console.error(err)
-      alert('Erro ao criar lente. Verifique os dados.')
+      console.error('Request error:', err)
+      alert('Error while creating lens. check data.')
     }
   }
 
@@ -119,7 +139,10 @@ export default function CreateProduct() {
             label="Weight (grams)"
             placeholder="800"
             value={weight}
-            onChange={(e) => setWeight(e.target.value)}
+            onChange={(e) => {
+              const onlyNumbers = e.target.value.replace(/\D/g, '')
+              setWeight(onlyNumbers)
+            }}
           />
 
           <div>
@@ -145,16 +168,18 @@ export default function CreateProduct() {
             />
           </div>
 
-          <Button size="md" variant="tertiary" type="submit">
+          <Button type="submit" size="md" variant="tertiary">
             Save
           </Button>
           <Button
-            icon={TrashIcon}
+            type="button"
+            icon={XIcon}
             size="md"
             variant="secondary"
             className="w-full"
+            onClick={() => navigate('/')}
           >
-            Delete
+            Cancel
           </Button>
         </form>
       </Card>

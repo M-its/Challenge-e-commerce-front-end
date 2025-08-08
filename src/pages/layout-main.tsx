@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useLocation } from 'react-router'
-import { CubeIcon, PlusIcon } from '@phosphor-icons/react'
+import { ApertureIcon, PlusIcon } from '@phosphor-icons/react'
 import Button from '../components/button'
 import Text from '../components/text'
 import Icon from '../components/icon'
@@ -17,7 +17,7 @@ export default function LayoutMain() {
           className="w-full flex flex-row justify-between gap-6"
         >
           <NavLink to="/" className="flex items-center gap-2 h-12">
-            <Icon svg={CubeIcon} className="w-6 h-6 fill-blue-400" />
+            <Icon svg={ApertureIcon} className="w-6 h-6 fill-blue-400" />
             <Text variant="text-xl-bold" className="text-slate-200">
               Lens Manager
             </Text>

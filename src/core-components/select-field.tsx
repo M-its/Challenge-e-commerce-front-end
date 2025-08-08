@@ -28,7 +28,9 @@ export default function SelectField({
           onChange={onChange}
           onBlur={() => setIsFocused(false)}
           onClick={() => setIsFocused((prev) => !prev)}
-          className="w-full px-3 py-3 bg-slate-800 border border-gray-700 rounded-lg text-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none pr-10"
+          className={`w-full px-3 py-3 bg-slate-800 border border-gray-700 rounded-lg ${
+            value === '' ? 'text-slate-500' : 'text-white'
+          } focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none pr-10`}
         >
           <option value="">Select type</option>
           <option value="Prime">Prime</option>
