@@ -86,7 +86,7 @@ export default function Home() {
     fetchProducts()
   }, [page, limit, filter, search])
   return (
-    <Container className="space-y-6 flex flex-col h-[800px]">
+    <Container className="space-y-6 flex flex-col mb-8">
       <InputText
         label="search"
         hideLabel
